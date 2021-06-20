@@ -99,7 +99,6 @@ class Distributor(object):
 
     def process(self) -> None:
         """Submits merkle root for rewards distribution and updates IPFS proofs."""
-
         # fetch current block number adjusted based on the number of confirmation blocks
         current_block_number: BlockNumber = get_latest_block_number(
             w3=self.w3, confirmation_blocks=ETH1_CONFIRMATION_BLOCKS
@@ -128,11 +127,6 @@ class Distributor(object):
         if is_paused:
             logger.info("Skipping merkle root update as Oracles contract is paused")
             return
-
-        logger.info(
-            f"Checking Merkle Distributor rewards up to {new_rewards_block_number} block"
-        )
-
         # fetch previous merkle update parameters
         # NB! can be `None` if it's the first update
         prev_merkle_root_parameters = get_prev_merkle_root_parameters(
@@ -143,9 +137,11 @@ class Distributor(object):
 
         # use rewards update block number at the time of last merkle distribution as a starting block
         if prev_merkle_root_parameters is None:
-            # it's the first merkle root update
-            prev_merkle_root_update_block_number: BlockNumber = BlockNumber(0)
-            prev_merkle_root_rewards_update_block_number: BlockNumber = BlockNumber(0)
+            # It's the first merkle root update.
+            # Avoid scanning unnecessary logs because of geth delay issues,
+            # The contract was launched aroudn block 12M.
+            prev_merkle_root_update_block_number: BlockNumber = BlockNumber(11_000_000)
+            prev_merkle_root_rewards_update_block_number: BlockNumber = BlockNumber(11_000_000)
             logger.warning("Executing first Merkle Distributor update")
         else:
             prev_merkle_root_update_block_number: BlockNumber = (

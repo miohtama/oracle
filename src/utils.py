@@ -5,6 +5,7 @@ import time
 from asyncio.exceptions import TimeoutError
 from typing import Union, Any, Callable
 
+import requests
 from eth_typing.evm import ChecksumAddress
 from hexbytes.main import HexBytes
 from notifiers.core import get_notifier  # type: ignore
@@ -91,7 +92,9 @@ def get_web3_client(
             w3.middleware_onion.add(ws_retry_request_middleware)
             logger.info("Injected request retry middleware")
     else:
-        w3 = Web3(Web3.HTTPProvider(http_endpoint))
+        # 90 seconds timeout for long eth_getLogs calls
+        request_args = {"timeout": 90}
+        w3 = Web3(Web3.HTTPProvider(http_endpoint, request_kwargs=request_args))
         logger.info(f"Using Web3 HTTP endpoint {http_endpoint}")
 
         if inject_retry_request:

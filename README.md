@@ -130,3 +130,13 @@ EOL
 source venv/bin/activate
 python -c "from web3 import Web3; w3 = Web3(); acc = w3.eth.account.create(); print(f'private key={w3.toHex(acc.privateKey)}, account={acc.address}')"
 ```
+
+## Troubleshooting
+
+### Testing Ethereum 1.0 JSON-RPC connection
+
+You can test the robustness of your JSON-RPC connection by runnning Merkle tree distributor from Python console:
+
+```shell
+python distributor_run.py
+```

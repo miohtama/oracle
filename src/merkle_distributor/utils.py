@@ -113,8 +113,10 @@ def get_prev_merkle_root_parameters(
     """
     Fetches previous merkle root update parameters.
     """
+
+    # The contract was deployed around block 11M
     events = merkle_distributor.events.MerkleRootUpdated.getLogs(
-        fromBlock=0, toBlock=to_block
+        fromBlock=11_000_000, toBlock=to_block
     )
     if not events:
         # it's the first merkle root update
@@ -143,6 +145,7 @@ def get_staked_eth_period_reward(
     prev_merkle_root_staking_rewards_update_block_number: BlockNumber = None,
 ) -> Wei:
     """Calculates period reward of staked eth since the last update."""
+
     total_rewards: Wei = reward_eth_token.functions.balanceOf(EMPTY_ADDR_HEX).call(
         block_identifier=new_rewards_block_number
     )

@@ -140,3 +140,6 @@ You can test the robustness of your JSON-RPC connection by runnning Merkle tree 
 ```shell
 python distributor_run.py
 ```
+
+This will check your Ethereum 1.0 node connectivity and if it has working `eth_getLogs` call.
+It uses `DEBUG` logging level so you can read individual calls going to the Ethereum node.
